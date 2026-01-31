@@ -1,18 +1,18 @@
 {
   "metadata": {
+    "name": "Kho dongbi9x",
     "author": "dongbi9x",
-    "description": "Kho truyện sạch lọc chữ ẩn by Chang"
+    "version": 3,
+    "source": "https://github.com/dongbi9x/KHO-TRUYEN",
+    "description": "Kho truyện EPUB sạch",
+    "locale": "vi_VN",
+    "language": "javascript",
+    "type": "novel"
   },
-  "data": [
-    {
-      "name": "Kho Truyện dongbi9x",
-      "author": "dongbi9x",
-      "path": "https://raw.githubusercontent.com/dongbi9x/KHO-TRUYEN/main/plugin.zip",
-      "version": 1,
-      "source": "https://github.com/dongbi9x/KHO-TRUYEN",
-      "description": "Nguồn truyện sạch tự động cập nhật EPUB",
-      "type": "novel",
-      "locale": "vi_VN"
-    }
-  ]
+  "script": {
+    "home": "home.js",
+    "detail": "detail.js",
+    "toc": "toc.js",
+    "chap": "chap.js"
+  }
 }

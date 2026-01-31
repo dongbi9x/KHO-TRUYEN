@@ -6,7 +6,7 @@ const fs = require('fs');
 const { execSync } = require('child_process');
 
 async function crawlAndPush(startUrl) {
-    console.log("🚀 Bot v20.5 - SIÊU TỰ ĐỘNG (Cào + Đóng gói + GitHub)...");
+    console.log("🚀 Bot v21.0 - Cấu trúc đa file chuyên nghiệp...");
     const browser = await puppeteer.launch({ headless: false }); 
     const page = await browser.newPage();
     await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36');
@@ -16,7 +16,8 @@ async function crawlAndPush(startUrl) {
     let storyInfo = { title: 'Truyen_Moi', cover: '' };
 
     try {
-        // --- PHẦN 1: CÀO TRUYỆN (Mặc định lấy 5 chương để bạn test nhanh) ---
+        // --- BƯỚC 1: CÀO TRUYỆN ---
+        // Mặc định lấy 5 chương để test, sửa số 5 thành số lớn hơn để lấy full
         while (currentUrl && chapters.length < 5) { 
             console.log(`🚀 Đang lấy: ${currentUrl}`);
             await page.goto(currentUrl, { waitUntil: 'networkidle2' });
@@ -28,7 +29,6 @@ async function crawlAndPush(startUrl) {
                 const contentArea = document.querySelector('#chapter-c') || document.querySelector('.chapter-content');
                 let html = "";
                 if (contentArea) {
-                    // Nhặt chữ ẩn và lọc rác
                     const ps = Array.from(contentArea.querySelectorAll('p')).map(p => p.innerText.trim()).filter(t => t.length > 5);
                     html = ps.map(p => `<p>${p}</p>`).join('');
                 }
@@ -44,7 +44,7 @@ async function crawlAndPush(startUrl) {
             await new Promise(r => setTimeout(r, 1000));
         }
 
-        // --- PHẦN 2: ĐÓNG GÓI FILE TRUYỆN .EPUB ---
+        // --- BƯỚC 2: ĐÓNG GÓI EPUB ---
         const storyZip = new JSZip();
         storyZip.file("mimetype", "application/epub+zip");
         const oebps = storyZip.folder("OEBPS");
@@ -65,7 +65,7 @@ async function crawlAndPush(startUrl) {
         const epubFileName = `${safeName}.epub`;
         fs.writeFileSync(epubFileName, storyBuffer);
 
-        // --- PHẦN 3: CẬP NHẬT DANH SÁCH list.json ---
+        // --- BƯỚC 3: CẬP NHẬT list.json ---
         let list = fs.existsSync('list.json') ? JSON.parse(fs.readFileSync('list.json', 'utf8')) : [];
         if (!list.find(i => i.title === storyInfo.title)) {
             list.push({ 
@@ -77,34 +77,40 @@ async function crawlAndPush(startUrl) {
             fs.writeFileSync('list.json', JSON.stringify(list, null, 2));
         }
 
-        // --- PHẦN 4: TỰ ĐỘNG TẠO PLUGIN.ZIP (CHO VBOOK) ---
-        console.log("📦 Đang đóng gói Plugin.zip...");
-        const pluginJsCode = `function home() {
-    var res = fetch("https://raw.githubusercontent.com/dongbi9x/KHO-TRUYEN/main/list.json");
-    var json = JSON.parse(res.string());
-    return Response.success(json.map(function(i) {
-        return { name: i.title, link: i.url, cover: i.cover, description: "Bản sạch by dongbi9x" };
-    }));
-}
-function detail(url) { return Response.success({ chapters: [{ name: "TẢI EPUB FULL", url: url }] }); }
-function search(q) { return home(); }`;
-
-        const pluginJsonCode = { "name": "Kho dongbi9x", "author": "dongbi9x", "version": 2, "type": "book" };
-        
+        // --- BƯỚC 4: ĐÓNG GÓI PLUGIN.ZIP (THEO CẤU TRÚC PRO) ---
+        console.log("📦 Đang đóng gói Plugin.zip từ thư mục src...");
         const pluginZip = new JSZip();
-        pluginZip.file("plugin.js", pluginJsCode);
-        pluginZip.file("plugin.json", JSON.stringify(pluginJsonCode));
+        
+        // Thêm file plugin.json vào gốc của ZIP
+        if (fs.existsSync('plugin.json')) {
+            pluginZip.file("plugin.json", fs.readFileSync('plugin.json', 'utf8'));
+        }
+
+        // Thêm toàn bộ file trong thư mục src vào folder src bên trong ZIP
+        const srcZipFolder = pluginZip.folder("src");
+        if (fs.existsSync('./src')) {
+            const files = fs.readdirSync("./src");
+            files.forEach(file => {
+                srcZipFolder.file(file, fs.readFileSync(`./src/${file}`, 'utf8'));
+            });
+        }
+
         const pluginBuffer = await pluginZip.generateAsync({type: "nodebuffer"});
         fs.writeFileSync('plugin.zip', pluginBuffer);
 
-        // --- PHẦN 5: TỰ ĐỘNG ĐẨY LÊN GITHUB ---
-        console.log("📤 Đang đồng bộ GitHub...");
+        // --- BƯỚC 5: ĐẨY LÊN GITHUB ---
+        console.log("📤 Đang đẩy toàn bộ lên GitHub...");
+        // Tự động bỏ qua thư mục node_modules khi push
+        if (!fs.existsSync('.gitignore')) {
+            fs.writeFileSync('.gitignore', 'node_modules/');
+        }
+        
         execSync('git add .');
         execSync(`git commit -m "Auto update: ${storyInfo.title}"`);
         execSync('git push origin main');
         
-        console.log("✅ TẤT CẢ ĐÃ HOÀN TẤT!");
-        console.log("👉 Giờ bạn chỉ cần dán link này vào vBook:");
+        console.log("✅ HOÀN TẤT!");
+        console.log("👉 Link Store vBook của bạn:");
         console.log("https://raw.githubusercontent.com/dongbi9x/KHO-TRUYEN/main/plugin.json");
 
     } catch (err) {
