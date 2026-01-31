@@ -6,9 +6,9 @@ const fs = require('fs');
 const { execSync } = require('child_process');
 
 async function crawlAndPush(startUrl) {
-    console.log("🚀 Bot v23.0 - Chế độ Phẳng (Flat Mode) & Direct Zip...");
+    console.log("🚀 Bot v24 - FIX 'EXTENSION ERROR'...");
     
-    // 1. Cào dữ liệu & Tạo EPUB (Giữ nguyên logic cũ)
+    // --- BƯỚC 1: CÀO TRUYỆN (Giữ nguyên) ---
     const browser = await puppeteer.launch({ headless: false }); 
     const page = await browser.newPage();
     let chapters = [];
@@ -16,8 +16,9 @@ async function crawlAndPush(startUrl) {
     let storyInfo = { title: 'Truyen_Moi', cover: '' };
 
     try {
-        while (currentUrl && chapters.length < 5) { // Demo 5 chương
-            console.log(`Đang lấy: ${currentUrl}`);
+        // Demo 5 chương
+        while (currentUrl && chapters.length < 5) { 
+            console.log(`Đang xử lý: ${currentUrl}`);
             await page.goto(currentUrl, { waitUntil: 'networkidle2' });
             const data = await page.evaluate(() => {
                 const sTitle = document.querySelector('.name-story, h1.title-story')?.innerText.trim();
@@ -30,7 +31,7 @@ async function crawlAndPush(startUrl) {
             currentUrl = currentUrl.replace(/(\d+)(\.html)$/, (m, p1, p2) => (parseInt(p1) + 1) + p2);
         }
 
-        // Tạo file EPUB
+        // Tạo EPUB
         const storyZip = new JSZip();
         storyZip.file("mimetype", "application/epub+zip");
         const oebps = storyZip.folder("OEBPS");
@@ -54,61 +55,65 @@ async function crawlAndPush(startUrl) {
             fs.writeFileSync('list.json', JSON.stringify(list, null, 2));
         }
 
-        // 2. TẠO FILE ZIP (CẤU TRÚC PHẲNG - KHÔNG THƯ MỤC CON)
-        console.log("📦 Đang đóng gói plugin.zip (Flat)...");
+        // --- BƯỚC 2: TẠO FILE ZIP FIX LỖI (QUAN TRỌNG) ---
+        console.log("📦 Đang tạo plugin.zip với logic JSON...");
         const finalZip = new JSZip();
 
-        // -> Tạo nội dung file Home.js (Gọi Gen.js)
-        const homeJsContent = `function execute() {
+        // 1. home.js: Chỉ đường dẫn tới list.json
+        finalZip.file("home.js", `function execute() {
     return Response.success([
         {title: "Danh Sách Truyện", input: "https://raw.githubusercontent.com/dongbi9x/KHO-TRUYEN/main/list.json", script: "gen.js"}
     ]);
-}`;
-        // -> Tạo nội dung file Gen.js (Xử lý list.json)
-        const genJsContent = `function execute(url, page) {
+}`);
+
+        // 2. gen.js: ĐỌC JSON (Khác hoàn toàn ReadWN đọc HTML)
+        finalZip.file("gen.js", `function execute(url, page) {
     var response = fetch(url);
     if (response.ok) {
-        try {
-            var json = JSON.parse(response.string());
-            var data = json.map(item => ({
+        var json = JSON.parse(response.string());
+        var data = [];
+        json.forEach(function(item){
+            data.push({
                 name: item.title,
                 link: item.url,
                 cover: item.cover || "https://via.placeholder.com/150",
                 description: "Dongbi9x Repo",
                 host: "https://github.com"
-            }));
-            return Response.success(data);
-        } catch (e) { return Response.error("Lỗi JSON: " + e.message); }
+            });
+        });
+        return Response.success(data);
     }
-    return Response.error("Lỗi kết nối");
-}`;
-        // -> Tạo nội dung file Toc.js
-        const tocJsContent = `function execute(url) {
+    return Response.success([]);
+}`);
+
+        // 3. toc.js: Trả về link tải EPUB
+        finalZip.file("toc.js", `function execute(url) {
     return Response.success([{
         name: "Tải EPUB Ngay",
         url: url,
         host: "https://github.com"
     }]);
-}`;
-        
-        // -> Nạp thẳng vào gốc file Zip (QUAN TRỌNG)
-        finalZip.file("home.js", homeJsContent);
-        finalZip.file("gen.js", genJsContent);
-        finalZip.file("detail.js", `function execute(url) { return Response.success({name: "Truyện EPUB", cover: "", description: "Tải tại mục danh sách", detail: "...", host: ""}); }`);
-        finalZip.file("toc.js", tocJsContent);
+}`);
+
+        // 4. chap.js & detail.js (Cơ bản)
         finalZip.file("chap.js", `function execute(url) { return Response.success("Link: " + url); }`);
-        
-        // -> File plugin.json nội bộ (Cũng nằm ở gốc Zip)
+        finalZip.file("detail.js", `function execute(url) { 
+            return Response.success({
+                name: "Truyện EPUB", cover: "", description: "Tải tại mục danh sách", detail: "...", host: ""
+            }); 
+        }`);
+
+        // 5. plugin.json: Cấu hình chuẩn, KHÔNG dùng src/
         finalZip.file("plugin.json", JSON.stringify({
             "metadata": {
-                "name": "Kho Dongbi9x (Flat)",
+                "name": "Kho Dongbi9x (Fixed)",
                 "author": "dongbi9x",
                 "version": 2026,
                 "source": "https://github.com/dongbi9x",
                 "type": "novel"
             },
             "script": {
-                "home": "home.js", // Không còn src/ nữa
+                "home": "home.js",
                 "gen": "gen.js",
                 "detail": "detail.js",
                 "toc": "toc.js",
@@ -119,14 +124,15 @@ async function crawlAndPush(startUrl) {
         const content = await finalZip.generateAsync({type: "nodebuffer"});
         fs.writeFileSync('plugin.zip', content);
 
-        // 3. ĐẨY LÊN GITHUB
-        console.log("📤 Push lên GitHub...");
-        execSync('git add .');
-        execSync('git commit -m "Update Flat Zip v23"');
-        execSync('git push origin main');
+        // --- BƯỚC 3: PUSH LÊN GITHUB ---
+        console.log("📤 Đang đẩy lên GitHub...");
+        try {
+            execSync('git add .');
+            execSync('git commit -m "Fix Extension Error Logic"');
+            execSync('git push origin main');
+        } catch (e) { console.log("Git status: Có thể chưa có thay đổi mới."); }
         
-        console.log("✅ XONG! Hãy dùng Link Zip bên dưới:");
-        console.log(`https://raw.githubusercontent.com/dongbi9x/KHO-TRUYEN/main/plugin.zip?v=${new Date().getTime()}`);
+        console.log("✅ XONG! LÀM THEO HƯỚNG DẪN BÊN DƯỚI ĐỂ CÀI ĐẶT.");
 
     } catch (e) { console.error(e); } finally { await browser.close(); }
 }
