@@ -1,78 +1,92 @@
 const fs = require('fs');
 const { execSync } = require('child_process');
 
-// GIAO DIỆN HIỆN ĐẠI CÓ TÌM KIẾM VÀ NÚT ADD VBOOK
+// 1. TẠO FILE PLUGIN.JSON (CHO VBOOK)
+const plugin = {
+  metadata: {
+    name: "Kho Dongbi9x",
+    author: "Dongbi9x",
+    version: 1,
+    source: "https://github.com/dongbi9x",
+    type: "novel",
+    locale: "vi_VN"
+  },
+  script: {
+    home: "src/home.js",
+    detail: "src/detail.js",
+    toc: "src/toc.js",
+    chap: "src/chap.js"
+  }
+};
+fs.writeFileSync('plugin.json', JSON.stringify(plugin, null, 2));
+
+// 2. TẠO GIAO DIỆN WEB (CÓ NÚT VÀ TÌM KIẾM)
 const webCode = `
 <!DOCTYPE html>
 <html>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>KHO TRUYỆN DONGBI9X</title>
     <style>
-        body { background: #121212; color: #e0e0e0; font-family: 'Segoe UI', sans-serif; padding: 15px; margin: 0; }
-        .header { position: sticky; top: 0; background: #121212; padding-bottom: 15px; z-index: 100; }
-        h2 { text-align: center; color: #00ff88; margin: 10px 0; text-transform: uppercase; letter-spacing: 2px; }
-        #search { width: 100%; padding: 12px; border-radius: 25px; border: 1px solid #333; background: #1e1e1e; color: white; box-sizing: border-box; outline: none; margin-bottom: 10px; }
-        .vbook-btn { display: block; width: 100%; padding: 10px; background: #ff9800; color: black; text-align: center; text-decoration: none; border-radius: 25px; font-weight: bold; margin-bottom: 20px; }
-        .item { background: #1e1e1e; padding: 15px; margin-bottom: 12px; border-radius: 12px; display: flex; justify-content: space-between; align-items: center; border: 1px solid #2d2d2d; transition: 0.3s; }
-        .item:active { transform: scale(0.98); background: #252525; }
-        .title { font-weight: bold; font-size: 15px; flex: 1; padding-right: 10px; overflow: hidden; text-overflow: ellipsis; }
-        .btn-download { background: #007bff; color: white; padding: 8px 18px; text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 13px; }
+        body { background: #121212; color: #fff; font-family: sans-serif; padding: 15px; margin: 0; }
+        .sticky-top { position: sticky; top: 0; background: #121212; padding: 10px 0; border-bottom: 2px solid #333; z-index: 99; }
+        .vbook-btn { display: block; background: #ff9800; color: #000; text-align: center; padding: 15px; border-radius: 10px; font-weight: bold; text-decoration: none; margin-bottom: 15px; font-size: 18px; border: 3px solid #fff; }
+        #search { width: 100%; padding: 12px; border-radius: 8px; border: none; margin-bottom: 10px; box-sizing: border-box; font-size: 16px; }
+        .item { background: #1e1e1e; padding: 15px; margin: 10px 0; border-radius: 10px; display: flex; justify-content: space-between; align-items: center; border: 1px solid #444; }
+        .title { color: #0f8; font-weight: bold; font-size: 16px; }
+        .btn-download { background: #007bff; color: #fff; padding: 10px 20px; border-radius: 5px; text-decoration: none; font-weight: bold; }
+        h2 { text-align: center; color: #fc0; margin: 5px 0; }
     </style>
 </head>
 <body>
-    <div class="header">
-        <h2>🚀 KHO TRUYỆN</h2>
-        <input type="text" id="search" placeholder="Tìm tên truyện..." onkeyup="search()">
-        <a href="vbook://add-extension?url=https://raw.githubusercontent.com/dongbi9x/KHO-TRUYEN/main/plugin.json" class="vbook-btn">➕ THÊM VÀO VBOOK</a>
+    <div class="sticky-top">
+        <h2>🚀 KHO TRUYỆN DONGBI9X</h2>
+        <a href="vbook://add-extension?url=https://raw.githubusercontent.com/dongbi9x/KHO-TRUYEN/main/plugin.json" class="vbook-btn">➕ THÊM VÀO VBOOK (CLICK ĐÂY)</a>
+        <input type="text" id="search" placeholder="🔍 Tìm tên truyện..." onkeyup="doSearch()">
     </div>
-    <div id="list">Đang tải...</div>
+    <div id="list">Đang tải danh sách...</div>
 
     <script>
-        let books = [];
+        let data = [];
         fetch('list.json?v=' + Date.now())
             .then(r => r.json())
-            .then(data => {
-                books = data;
-                render(books);
+            .then(json => {
+                data = json;
+                show(data);
             });
 
-        function render(arr) {
-            let html = arr.map(i => \`
-                <div class="item">
-                    <div class="title">\${i.title}</div>
-                    <a href="\${i.url}" class="btn-download">TẢI</a>
-                </div>
-            \`).join('');
-            document.getElementById('list').innerHTML = html || '<p style="text-align:center">Không tìm thấy truyện</p>';
+        function show(arr) {
+            let h = '';
+            arr.forEach(i => {
+                h += '<div class="item"><div class="title">' + i.title + '</div><a href="' + i.url + '" class="btn-download">TẢI EPUB</a></div>';
+            });
+            document.getElementById('list').innerHTML = h || '<p>Không tìm thấy truyện</p>';
         }
 
-        function search() {
+        function doSearch() {
             let k = document.getElementById('search').value.toLowerCase();
-            let filtered = books.filter(b => b.title.toLowerCase().includes(k));
-            render(filtered);
+            show(data.filter(i => i.title.toLowerCase().includes(k)));
         }
     </script>
 </body>
 </html>`;
 
-console.log('--- Đang quét file EPUB ---');
+fs.writeFileSync('index.html', webCode);
+
+// 3. QUÉT TRUYỆN VÀ PUSH GITHUB
+console.log('--- Đang quét file ---');
 const files = fs.readdirSync('./').filter(f => f.endsWith('.epub'));
 const list = files.map(f => ({
     title: f.replace('.epub', ''),
     url: 'https://raw.githubusercontent.com/dongbi9x/KHO-TRUYEN/main/' + encodeURIComponent(f)
 }));
-
-fs.writeFileSync('index.html', webCode);
 fs.writeFileSync('list.json', JSON.stringify(list, null, 2));
 
 try {
-    console.log('--- Đang đẩy lên GitHub ---');
     execSync('git add .');
-    execSync('git commit -m "Update interface with search and vBook btn"');
+    execSync('git commit -m "Update full"');
     execSync('git push origin main');
-    console.log('\n✅ XONG! Giao diện mới đã online.');
+    console.log('✅ ĐÃ XONG! LÊN HÀNG RỒI.');
 } catch (e) {
-    console.log('❌ Lỗi: ' + e.message);
+    console.log('❌ Lỗi Git!');
 }
