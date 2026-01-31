@@ -1,15 +1,1 @@
-{
-  "metadata": {
-    "author": "dongbi9x",
-    "description": "Kho truyện sạch"
-  },
-  "data": [
-    {
-      "name": "Kho Dongbi9x (ReadWN Style)",
-      "author": "dongbi9x",
-      "path": "https://raw.githubusercontent.com/dongbi9x/KHO-TRUYEN/main/plugin.zip",
-      "version": 1769893927858,
-      "type": "novel"
-    }
-  ]
-}
+{"metadata":{"name":"Kho dongbi9x","author":"dongbi9x","version":100,"type":"novel"},"data":[{"name":"Kho dongbi9x","author":"dongbi9x","path":"https://raw.githubusercontent.com/dongbi9x/KHO-TRUYEN/main/plugin.zip","version":100,"type":"novel"}]}
