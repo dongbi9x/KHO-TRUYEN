@@ -1,17 +1,18 @@
 {
   "metadata": {
     "author": "dongbi9x",
-    "description": "Kho truyện sạch đã lọc chữ ẩn"
+    "description": "Kho truyen sach"
   },
   "data": [
     {
-      "name": "Kho Truyện dongbi9x",
+      "name": "Kho Truyen dongbi9x",
       "author": "dongbi9x",
       "path": "https://raw.githubusercontent.com/dongbi9x/KHO-TRUYEN/main/plugin.js",
       "version": 1,
+      "source": "https://github.com/dongbi9x/KHO-TRUYEN",
+      "description": "Truyen sach da loc chu an",
       "type": "novel",
-      "locale": "vi_VN",
-      "description": "Nguồn truyện sạch tự động cập nhật"
+      "locale": "vi_VN"
     }
   ]
 }
