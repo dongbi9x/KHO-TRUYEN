@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>KHO TRUYEN DONGBI9X</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        body { font-family: sans-serif; background: #121212; color: white; padding: 20px; }
+        .book { background: #1e1e1e; padding: 15px; margin-bottom: 10px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; border: 1px solid #333; }
+        .title { font-weight: bold; font-size: 16px; color: #00ff88; }
+        .btn { background: #007bff; color: white; padding: 8px 15px; text-decoration: none; border-radius: 5px; font-size: 14px; }
+        h2 { text-align: center; color: #ffcc00; }
+    </style>
+</head>
+<body>
+    <h2>🚀 KHO TRUYEN DONGBI9X</h2>
+    <div id="list">Đang tải danh sách...</div>
+
+    <script>
+        fetch('https://raw.githubusercontent.com/dongbi9x/KHO-TRUYEN/main/list.json')
+            .then(res => res.json())
+            .then(data => {
+                let html = '';
+                data.forEach(item => {
+                    html += `<div class="book">
+                                <div class="title">${item.title}</div>
+                                <a href="${item.url}" class="btn">TẢI EPUB</a>
+                             </div>`;
+                });
+                document.getElementById('list').innerHTML = html;
+            })
+            .catch(e => document.getElementById('list').innerHTML = 'Lỗi tải danh sách!');
+    </script>
+</body>
+</html>
