@@ -1,9 +1,63 @@
 const fs = require('fs');
 const { execSync } = require('child_process');
 
-const webCode = `<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>KHO TRUYỆN</title><style>body{background:#1a1a1a;color:white;font-family:sans-serif;padding:15px}.item{background:#2a2a2a;padding:15px;margin-bottom:10px;border-radius:8px;display:flex;justify-content:space-between;align-items:center;border:1px solid #444}.title{font-weight:bold;color:#0f8;flex:1;margin-right:10px}.btn{background:#007bff;color:white;padding:8px 15px;text-decoration:none;border-radius:5px;font-weight:bold}h2{text-align:center;color:#fc0;border-bottom:2px solid #fc0;padding-bottom:10px}</style></head><body><h2>🚀 KHO TRUYỆN DONGBI9X</h2><div id="l">Đang tải danh sách...</div><script>fetch('list.json?v='+Date.now()).then(r=>r.json()).then(data=>{let s="";data.forEach(i=>{s+='<div class="item"><div class="title">'+i.title+'</div><a href="'+i.url+'" class="btn">TẢI</a></div>'});document.getElementById('l').innerHTML=s}).catch(()=>document.getElementById('l').innerHTML='Chưa có truyện!');</script></body></html>`;
+// GIAO DIỆN HIỆN ĐẠI CÓ TÌM KIẾM VÀ NÚT ADD VBOOK
+const webCode = `
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>KHO TRUYỆN DONGBI9X</title>
+    <style>
+        body { background: #121212; color: #e0e0e0; font-family: 'Segoe UI', sans-serif; padding: 15px; margin: 0; }
+        .header { position: sticky; top: 0; background: #121212; padding-bottom: 15px; z-index: 100; }
+        h2 { text-align: center; color: #00ff88; margin: 10px 0; text-transform: uppercase; letter-spacing: 2px; }
+        #search { width: 100%; padding: 12px; border-radius: 25px; border: 1px solid #333; background: #1e1e1e; color: white; box-sizing: border-box; outline: none; margin-bottom: 10px; }
+        .vbook-btn { display: block; width: 100%; padding: 10px; background: #ff9800; color: black; text-align: center; text-decoration: none; border-radius: 25px; font-weight: bold; margin-bottom: 20px; }
+        .item { background: #1e1e1e; padding: 15px; margin-bottom: 12px; border-radius: 12px; display: flex; justify-content: space-between; align-items: center; border: 1px solid #2d2d2d; transition: 0.3s; }
+        .item:active { transform: scale(0.98); background: #252525; }
+        .title { font-weight: bold; font-size: 15px; flex: 1; padding-right: 10px; overflow: hidden; text-overflow: ellipsis; }
+        .btn-download { background: #007bff; color: white; padding: 8px 18px; text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 13px; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h2>🚀 KHO TRUYỆN</h2>
+        <input type="text" id="search" placeholder="Tìm tên truyện..." onkeyup="search()">
+        <a href="vbook://add-extension?url=https://raw.githubusercontent.com/dongbi9x/KHO-TRUYEN/main/plugin.json" class="vbook-btn">➕ THÊM VÀO VBOOK</a>
+    </div>
+    <div id="list">Đang tải...</div>
 
-console.log('--- Đang quét file ---');
+    <script>
+        let books = [];
+        fetch('list.json?v=' + Date.now())
+            .then(r => r.json())
+            .then(data => {
+                books = data;
+                render(books);
+            });
+
+        function render(arr) {
+            let html = arr.map(i => \`
+                <div class="item">
+                    <div class="title">\${i.title}</div>
+                    <a href="\${i.url}" class="btn-download">TẢI</a>
+                </div>
+            \`).join('');
+            document.getElementById('list').innerHTML = html || '<p style="text-align:center">Không tìm thấy truyện</p>';
+        }
+
+        function search() {
+            let k = document.getElementById('search').value.toLowerCase();
+            let filtered = books.filter(b => b.title.toLowerCase().includes(k));
+            render(filtered);
+        }
+    </script>
+</body>
+</html>`;
+
+console.log('--- Đang quét file EPUB ---');
 const files = fs.readdirSync('./').filter(f => f.endsWith('.epub'));
 const list = files.map(f => ({
     title: f.replace('.epub', ''),
@@ -16,9 +70,9 @@ fs.writeFileSync('list.json', JSON.stringify(list, null, 2));
 try {
     console.log('--- Đang đẩy lên GitHub ---');
     execSync('git add .');
-    execSync('git commit -m "update all"');
+    execSync('git commit -m "Update interface with search and vBook btn"');
     execSync('git push origin main');
-    console.log('\n✅ XONG RỒI! ĐÃ LÊN HÀNG.');
+    console.log('\n✅ XONG! Giao diện mới đã online.');
 } catch (e) {
-    console.log('❌ Lỗi Git: Bạn cần cài Git và login trước.');
+    console.log('❌ Lỗi: ' + e.message);
 }
