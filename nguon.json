@@ -1,18 +1,11 @@
 {
-  "metadata": {
-    "author": "dongbi9x",
-    "description": "Kho truyen sach"
-  },
   "data": [
     {
-      "name": "Kho Truyen dongbi9x",
+      "name": "Kho dongbi9x",
       "author": "dongbi9x",
       "path": "https://raw.githubusercontent.com/dongbi9x/KHO-TRUYEN/main/plugin.js",
       "version": 1,
-      "source": "https://github.com/dongbi9x/KHO-TRUYEN",
-      "description": "Truyen sach da loc chu an",
-      "type": "novel",
-      "locale": "vi_VN"
+      "type": "novel"
     }
   ]
 }
