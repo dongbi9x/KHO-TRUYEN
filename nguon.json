@@ -1,0 +1,9 @@
+{
+  "name": "Kho Truyện Sạch dongbi9x",
+  "author": "dongbi9x",
+  "version": 1,
+  "host": "https://raw.githubusercontent.com/dongbi9x/KHO-TRUYEN/main",
+  "type": "book",
+  "description": "Kho truyện đã được nhặt chữ ẩn và lọc quảng cáo Shopee",
+  "script": "https://raw.githubusercontent.com/dongbi9x/KHO-TRUYEN/main/plugin.js"
+}
