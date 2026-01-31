@@ -1,3 +1,4 @@
 function execute(url) {
-    return Response.success("");
+    // Trả về link để vBook tự xử lý hoặc hiển thị thông báo
+    return Response.success("Link tải: " + url);
 }

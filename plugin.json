@@ -1,17 +1,15 @@
 {
   "metadata": {
     "author": "dongbi9x",
-    "description": "Kho truyen sach Pro"
+    "description": "Kho truyện sạch"
   },
   "data": [
     {
-      "name": "Kho dongbi9x",
+      "name": "Kho Dongbi9x (ReadWN Style)",
       "author": "dongbi9x",
       "path": "https://raw.githubusercontent.com/dongbi9x/KHO-TRUYEN/main/plugin.zip",
-      "version": 30,
-      "type": "book",
-      "description": "Nguồn truyện EPUB sạch",
-      "locale": "vi_VN"
+      "version": 1769893927858,
+      "type": "novel"
     }
   ]
 }

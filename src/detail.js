@@ -1,9 +1,10 @@
 function execute(url) {
     return Response.success({
         name: "Truyện EPUB",
-        author: "dongbi9x",
-        description: "Tải file EPUB sạch đã lọc chữ ẩn.",
-        detail: "Tác giả: dongbi9x",
-        host: "https://github.com/dongbi9x"
+        cover: "https://via.placeholder.com/150",
+        author: "Dongbi9x",
+        description: "Truyện sạch đã lọc quảng cáo.",
+        detail: "Kho truyện cá nhân",
+        host: "https://raw.githubusercontent.com"
     });
 }
