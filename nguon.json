@@ -1,7 +1,7 @@
 {
   "metadata": {
     "author": "dongbi9x",
-    "description": "Kho truyện sạch đã lọc chữ ẩn và Shopee"
+    "description": "Kho truyện sạch đã lọc chữ ẩn"
   },
   "data": [
     {
@@ -9,11 +9,9 @@
       "author": "dongbi9x",
       "path": "https://raw.githubusercontent.com/dongbi9x/KHO-TRUYEN/main/plugin.js",
       "version": 1,
-      "source": "https://github.com/dongbi9x/KHO-TRUYEN",
-      "icon": "https://raw.githubusercontent.com/dongbi9x/KHO-TRUYEN/main/icon.png",
-      "description": "Nguồn truyện sạch tự động cập nhật",
       "type": "novel",
-      "locale": "vi_VN"
+      "locale": "vi_VN",
+      "description": "Nguồn truyện sạch tự động cập nhật"
     }
   ]
 }
