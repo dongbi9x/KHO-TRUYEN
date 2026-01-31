@@ -1,9 +1,19 @@
 {
-  "name": "Kho Truyện Sạch dongbi9x",
-  "author": "dongbi9x",
-  "version": 1,
-  "host": "https://raw.githubusercontent.com/dongbi9x/KHO-TRUYEN/main",
-  "type": "book",
-  "description": "Kho truyện đã được nhặt chữ ẩn và lọc quảng cáo Shopee",
-  "script": "https://raw.githubusercontent.com/dongbi9x/KHO-TRUYEN/main/plugin.js"
+  "metadata": {
+    "author": "dongbi9x",
+    "description": "Kho truyện sạch đã lọc chữ ẩn và Shopee"
+  },
+  "data": [
+    {
+      "name": "Kho Truyện dongbi9x",
+      "author": "dongbi9x",
+      "path": "https://raw.githubusercontent.com/dongbi9x/KHO-TRUYEN/main/plugin.js",
+      "version": 1,
+      "source": "https://github.com/dongbi9x/KHO-TRUYEN",
+      "icon": "https://raw.githubusercontent.com/dongbi9x/KHO-TRUYEN/main/icon.png",
+      "description": "Nguồn truyện sạch tự động cập nhật",
+      "type": "novel",
+      "locale": "vi_VN"
+    }
+  ]
 }
