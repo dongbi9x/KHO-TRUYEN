@@ -1,11 +1,12 @@
 {
-  "data": [
-    {
-      "name": "Kho dongbi9x",
-      "author": "dongbi9x",
-      "path": "https://raw.githubusercontent.com/dongbi9x/KHO-TRUYEN/main/plugin.js",
-      "version": 1,
-      "type": "novel"
-    }
-  ]
+  "name": "Kho dongbi9x",
+  "author": "dongbi9x",
+  "version": 1,
+  "type": "book",
+  "description": "Truyen sach da loc chu an",
+  "bookSource": {
+    "home": "https://raw.githubusercontent.com/dongbi9x/KHO-TRUYEN/main/plugin.js",
+    "detail": "https://raw.githubusercontent.com/dongbi9x/KHO-TRUYEN/main/plugin.js",
+    "search": "https://raw.githubusercontent.com/dongbi9x/KHO-TRUYEN/main/plugin.js"
+  }
 }
