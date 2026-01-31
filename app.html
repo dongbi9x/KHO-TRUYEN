@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body { background: #121212; color: white; font-family: sans-serif; margin: 0; padding: 20px; }
+        .item { background: #1e1e1e; padding: 15px; margin-bottom: 10px; border-radius: 12px; display: flex; justify-content: space-between; align-items: center; border: 1px solid #333; box-shadow: 0 4px 6px rgba(0,0,0,0.3); }
+        .t { font-weight: bold; font-size: 16px; color: #00ff88; }
+        .btn { background: #007bff; color: white; padding: 10px 20px; text-decoration: none; border-radius: 8px; font-weight: bold; }
+        h2 { text-align: center; color: #ffcc00; margin-bottom: 25px; }
+    </style>
+</head>
+<body>
+    <h2>🚀 KHO TRUYEN DONGBI9X</h2>
+    <div id="list">Đang quét truyện...</div>
+    <script>
+        fetch('https://raw.githubusercontent.com/dongbi9x/KHO-TRUYEN/main/list.json')
+            .then(r => r.json())
+            .then(data => {
+                let html = '';
+                data.forEach(i => {
+                    html += `<div class="item">
+                                <div class="t">${i.title}</div>
+                                <a href="${i.url}" class="btn">TẢI</a>
+                             </div>`;
+                });
+                document.getElementById('list').innerHTML = html;
+            }).catch(() => { document.getElementById('list').innerHTML = 'Lỗi kết nối!'; });
+    </script>
+</body>
+</html>
