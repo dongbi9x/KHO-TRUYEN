@@ -7,9 +7,10 @@ function execute() {
                 name: item.title,
                 link: item.url,
                 cover: item.cover || "",
-                description: "Bản sạch by dongbi9x"
+                description: "Bản sạch by dongbi9x",
+                host: "https://github.com/dongbi9x"
             };
         }));
     }
-    return Response.error("Lỗi tải");
+    return null;
 }
