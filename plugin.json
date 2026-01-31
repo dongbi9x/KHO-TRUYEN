@@ -1,18 +1,17 @@
 {
   "metadata": {
-    "name": "Kho dongbi9x",
     "author": "dongbi9x",
-    "version": 25,
-    "source": "https://github.com/dongbi9x/KHO-TRUYEN",
-    "description": "Kho truyen sach loc chu an",
-    "locale": "vi_VN",
-    "language": "javascript",
-    "type": "novel"
+    "description": "Kho truyen sach Pro"
   },
-  "script": {
-    "home": "home.js",
-    "detail": "detail.js",
-    "toc": "toc.js",
-    "chap": "chap.js"
-  }
+  "data": [
+    {
+      "name": "Kho dongbi9x",
+      "author": "dongbi9x",
+      "path": "https://raw.githubusercontent.com/dongbi9x/KHO-TRUYEN/main/plugin.zip",
+      "version": 26,
+      "type": "book",
+      "description": "Nguồn truyện EPUB sạch",
+      "locale": "vi_VN"
+    }
+  ]
 }
