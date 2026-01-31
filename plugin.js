@@ -1,25 +1,11 @@
 function home() {
-    var response = fetch("https://raw.githubusercontent.com/dongbi9x/KHO-TRUYEN/main/list.json");
-    var json = JSON.parse(response.string());
-    var result = [];
-    for (var i = 0; i < json.length; i++) {
-        result.push({
-            name: json[i].title,
-            link: json[i].url,
-            cover: "https://via.placeholder.com/200x300?text=KHO+TRUYEN",
-            description: "Bản EPUB sạch - dongbi9x"
-        });
-    }
-    return Response.success(result);
+    var res = fetch("https://raw.githubusercontent.com/dongbi9x/KHO-TRUYEN/main/list.json");
+    var json = JSON.parse(res.string());
+    return Response.success(json.map(function(i) {
+        return { name: i.title, link: i.url, description: "Bản sạch by dongbi9x" };
+    }));
 }
-
 function detail(url) {
-    return Response.success({
-        book: { name: "Truyện Sạch", author: "dongbi9x" },
-        chapters: [{ name: "NHẤN ĐỂ TẢI BẢN FULL EPUB", url: url }]
-    });
+    return Response.success({ chapters: [{ name: "TẢI EPUB", url: url }] });
 }
-
-function search(query) {
-    return home();
-}
+function search(q) { return home(); }
