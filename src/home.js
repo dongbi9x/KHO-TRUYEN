@@ -6,10 +6,10 @@ function execute() {
             return {
                 name: item.title,
                 link: item.url,
-                cover: item.cover || "https://via.placeholder.com/200x300?text=EPUB",
+                cover: item.cover || "",
                 description: "Bản sạch by dongbi9x"
             };
         }));
     }
-    return Response.error("Lỗi tải danh sách");
+    return Response.error("Lỗi tải");
 }
