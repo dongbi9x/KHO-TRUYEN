@@ -2,9 +2,9 @@
   "metadata": {
     "name": "Kho dongbi9x",
     "author": "dongbi9x",
-    "version": 3,
+    "version": 22,
     "source": "https://github.com/dongbi9x/KHO-TRUYEN",
-    "description": "Kho truyện EPUB sạch",
+    "description": "Kho truyen sach loc chu an",
     "locale": "vi_VN",
     "language": "javascript",
     "type": "novel"

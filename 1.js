@@ -6,7 +6,7 @@ const fs = require('fs');
 const { execSync } = require('child_process');
 
 async function crawlAndPush(startUrl) {
-    console.log("🚀 Bot v21.0 - Cấu trúc đa file chuyên nghiệp...");
+    console.log("🚀 Bot v21.5 - Đóng gói chuẩn Readwn (Phẳng) & Tự động GitHub...");
     const browser = await puppeteer.launch({ headless: false }); 
     const page = await browser.newPage();
     await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36');
@@ -16,8 +16,8 @@ async function crawlAndPush(startUrl) {
     let storyInfo = { title: 'Truyen_Moi', cover: '' };
 
     try {
-        // --- BƯỚC 1: CÀO TRUYỆN ---
-        // Mặc định lấy 5 chương để test, sửa số 5 thành số lớn hơn để lấy full
+        // --- PHẦN 1: CÀO TRUYỆN ---
+        // Lấy 5 chương để test, sửa số 5 thành 2000 để lấy full
         while (currentUrl && chapters.length < 5) { 
             console.log(`🚀 Đang lấy: ${currentUrl}`);
             await page.goto(currentUrl, { waitUntil: 'networkidle2' });
@@ -44,7 +44,7 @@ async function crawlAndPush(startUrl) {
             await new Promise(r => setTimeout(r, 1000));
         }
 
-        // --- BƯỚC 2: ĐÓNG GÓI EPUB ---
+        // --- PHẦN 2: ĐÓNG GÓI FILE EPUB ---
         const storyZip = new JSZip();
         storyZip.file("mimetype", "application/epub+zip");
         const oebps = storyZip.folder("OEBPS");
@@ -65,7 +65,7 @@ async function crawlAndPush(startUrl) {
         const epubFileName = `${safeName}.epub`;
         fs.writeFileSync(epubFileName, storyBuffer);
 
-        // --- BƯỚC 3: CẬP NHẬT list.json ---
+        // --- PHẦN 3: CẬP NHẬT list.json ---
         let list = fs.existsSync('list.json') ? JSON.parse(fs.readFileSync('list.json', 'utf8')) : [];
         if (!list.find(i => i.title === storyInfo.title)) {
             list.push({ 
@@ -77,39 +77,35 @@ async function crawlAndPush(startUrl) {
             fs.writeFileSync('list.json', JSON.stringify(list, null, 2));
         }
 
-        // --- BƯỚC 4: ĐÓNG GÓI PLUGIN.ZIP (THEO CẤU TRÚC PRO) ---
-        console.log("📦 Đang đóng gói Plugin.zip từ thư mục src...");
+        // --- PHẦN 4: ĐÓNG GÓI PLUGIN.ZIP (CẤU TRÚC PHẲNG - CHUẨN VBOOK) ---
+        console.log("📦 Đang đóng gói Plugin.zip (Flatten Structure)...");
         const pluginZip = new JSZip();
         
-        // Thêm file plugin.json vào gốc của ZIP
+        // 1. Đưa plugin.json vào gốc ZIP
         if (fs.existsSync('plugin.json')) {
             pluginZip.file("plugin.json", fs.readFileSync('plugin.json', 'utf8'));
         }
 
-        // Thêm toàn bộ file trong thư mục src vào folder src bên trong ZIP
-        const srcZipFolder = pluginZip.folder("src");
+        // 2. Bốc toàn bộ file TRONG thư mục src ra ngoài gốc ZIP (Không tạo folder src)
         if (fs.existsSync('./src')) {
             const files = fs.readdirSync("./src");
             files.forEach(file => {
-                srcZipFolder.file(file, fs.readFileSync(`./src/${file}`, 'utf8'));
+                pluginZip.file(file, fs.readFileSync(`./src/${file}`, 'utf8'));
             });
         }
 
         const pluginBuffer = await pluginZip.generateAsync({type: "nodebuffer"});
         fs.writeFileSync('plugin.zip', pluginBuffer);
 
-        // --- BƯỚC 5: ĐẨY LÊN GITHUB ---
-        console.log("📤 Đang đẩy toàn bộ lên GitHub...");
-        // Tự động bỏ qua thư mục node_modules khi push
-        if (!fs.existsSync('.gitignore')) {
-            fs.writeFileSync('.gitignore', 'node_modules/');
-        }
+        // --- PHẦN 5: TỰ ĐỘNG ĐẨY LÊN GITHUB ---
+        console.log("📤 Đang đồng bộ GitHub...");
+        if (!fs.existsSync('.gitignore')) fs.writeFileSync('.gitignore', 'node_modules/');
         
         execSync('git add .');
         execSync(`git commit -m "Auto update: ${storyInfo.title}"`);
         execSync('git push origin main');
         
-        console.log("✅ HOÀN TẤT!");
+        console.log("✅ TẤT CẢ ĐÃ HOÀN TẤT!");
         console.log("👉 Link Store vBook của bạn:");
         console.log("https://raw.githubusercontent.com/dongbi9x/KHO-TRUYEN/main/plugin.json");
 
