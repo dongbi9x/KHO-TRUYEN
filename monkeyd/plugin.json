@@ -1,0 +1,21 @@
+{
+  "metadata": {
+    "name": "MonkeyD Truyện",
+    "author": "Chu",
+    "version": 1,
+    "source": "https://monkeydtruyen.com",
+    "regexp": "(monkeydtruyen\\.com/.*\\.html)",
+    "description": "Truyện chữ Zhihu, ngôn tình, xuyên không, cổ đại, đam mỹ... Đọc full online",
+    "locale": "vi_VN",
+    "tag": "",
+    "type": "novel"
+  },
+  "script": {
+    "home": "home",
+    "genre": "genre",
+    "detail": "detail",
+    "search": "search",
+    "toc": "toc",
+    "chap": "chap"
+  }
+}
