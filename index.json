@@ -1,0 +1,19 @@
+{
+  "metadata": {
+    "author": "Chu",
+    "description": "Nguồn cá nhân"
+  },
+  "data": [
+    {
+      "name": "MonkeyD Truyện",
+      "author": "Chu",
+      "path": "https://raw.githubusercontent.com/dongbi9x/KHO-TRUYEN/main/monkeyd/plugin.zip",
+      "version": 1,
+      "source": "https://monkeydtruyen.com",
+      "icon": "https://raw.githubusercontent.com/dongbi9x/KHO-TRUYEN/main/monkeyd/icon.png",
+      "description": "Truyện chữ Zhihu, ngôn tình...",
+      "type": "novel",
+      "locale": "vi_VN"
+    }
+  ]
+}
